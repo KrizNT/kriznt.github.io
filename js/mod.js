@@ -1,8 +1,8 @@
 let modInfo = {
-	name: "The ??? Tree",
-	id: "mymod",
-	author: "nobody",
-	pointsName: "points",
+	name: "Upgrade Wall",
+	id: "krizthedev",
+	author: "KrizNT // Kriz#0250",
+	pointsName: "AP",
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
@@ -12,7 +12,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
+	num: "0.1",
 	name: "Literally nothing",
 }
 
@@ -42,6 +42,16 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	if (hasUpgrade("BP", 11)) gain = gain.add(upgradeEffect("BP", 11));
+	if (hasUpgrade("BP", 12)) gain = gain.add(upgradeEffect("BP", 12));
+	if (hasUpgrade("BP", 13)) gain = gain.add(upgradeEffect("BP", 13));
+	if (hasUpgrade("BP", 14)) gain = gain.add(upgradeEffect("BP", 14));
+	if (hasUpgrade("BP", 15)) gain = gain.add(upgradeEffect("BP", 15));
+	if (hasUpgrade("BP", 21)) gain = gain.add(upgradeEffect("BP", 21));
+	if (hasUpgrade("BP", 22)) gain = gain.add(upgradeEffect("BP", 22));
+	if (hasUpgrade("BP", 23)) gain = gain.add(upgradeEffect("BP", 23));
+	if (hasUpgrade("BP", 24)) gain = gain.add(upgradeEffect("BP", 24));
+	if (hasUpgrade("BP", 25)) gain = gain.add(upgradeEffect("BP", 25));
 	return gain
 }
 
