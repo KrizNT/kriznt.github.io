@@ -52,6 +52,16 @@ function getPointGen() {
 	if (hasUpgrade("BP", 23)) gain = gain.add(upgradeEffect("BP", 23));
 	if (hasUpgrade("BP", 24)) gain = gain.add(upgradeEffect("BP", 24));
 	if (hasUpgrade("BP", 25)) gain = gain.add(upgradeEffect("BP", 25));
+	if (hasUpgrade("BP", 31)) gain = gain.add(upgradeEffect("BP", 31));
+	if (hasUpgrade("BP", 32)) gain = gain.add(upgradeEffect("BP", 32));
+	if (hasUpgrade("BP", 33)) gain = gain.add(upgradeEffect("BP", 33));
+	if (hasUpgrade("BP", 34)) gain = gain.add(upgradeEffect("BP", 34));
+	if (hasUpgrade("BP", 35)) gain = gain.add(upgradeEffect("BP", 35));
+	if (hasUpgrade("BP", 41)) gain = gain.add(upgradeEffect("BP", 41));
+	if (hasUpgrade("BP", 42)) gain = gain.add(upgradeEffect("BP", 42));
+	if (hasUpgrade("BP", 43)) gain = gain.add(upgradeEffect("BP", 43));
+	if (hasUpgrade("BP", 44)) gain = gain.add(upgradeEffect("BP", 44));
+	if (hasUpgrade("BP", 45)) gain = gain.add(upgradeEffect("BP", 45));
 	return gain
 }
 
