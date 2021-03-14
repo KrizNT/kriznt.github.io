@@ -5,21 +5,21 @@ let modInfo = {
 	pointsName: "AP",
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (1), // Used for hard resets and new players
 	
 	offlineLimit: 1,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1",
-	name: "Literally nothing",
+	num: "0.3a",
+	name: "Remake - Part 1",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+	<h3>v0.3</h3><br>
+		- Added BP Based boosters upgrades.<br>
+		- Added 10 New Upgrades.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -42,26 +42,31 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
-	if (hasUpgrade("BP", 11)) gain = gain.add(upgradeEffect("BP", 11));
-	if (hasUpgrade("BP", 12)) gain = gain.add(upgradeEffect("BP", 12));
-	if (hasUpgrade("BP", 13)) gain = gain.add(upgradeEffect("BP", 13));
-	if (hasUpgrade("BP", 14)) gain = gain.add(upgradeEffect("BP", 14));
-	if (hasUpgrade("BP", 15)) gain = gain.add(upgradeEffect("BP", 15));
-	if (hasUpgrade("BP", 21)) gain = gain.add(upgradeEffect("BP", 21));
-	if (hasUpgrade("BP", 22)) gain = gain.add(upgradeEffect("BP", 22));
-	if (hasUpgrade("BP", 23)) gain = gain.add(upgradeEffect("BP", 23));
-	if (hasUpgrade("BP", 24)) gain = gain.add(upgradeEffect("BP", 24));
-	if (hasUpgrade("BP", 25)) gain = gain.add(upgradeEffect("BP", 25));
-	if (hasUpgrade("BP", 31)) gain = gain.add(upgradeEffect("BP", 31));
-	if (hasUpgrade("BP", 32)) gain = gain.add(upgradeEffect("BP", 32));
-	if (hasUpgrade("BP", 33)) gain = gain.add(upgradeEffect("BP", 33));
-	if (hasUpgrade("BP", 34)) gain = gain.add(upgradeEffect("BP", 34));
-	if (hasUpgrade("BP", 35)) gain = gain.add(upgradeEffect("BP", 35));
-	if (hasUpgrade("BP", 41)) gain = gain.add(upgradeEffect("BP", 41));
-	if (hasUpgrade("BP", 42)) gain = gain.add(upgradeEffect("BP", 42));
-	if (hasUpgrade("BP", 43)) gain = gain.add(upgradeEffect("BP", 43));
-	if (hasUpgrade("BP", 44)) gain = gain.add(upgradeEffect("BP", 44));
-	if (hasUpgrade("BP", 45)) gain = gain.add(upgradeEffect("BP", 45));
+	if (hasUpgrade("BP", 11)) gain = gain.times(layers["BP"].upgrades[11].effect());
+	if (hasUpgrade("BP", 12)) gain = gain.times(layers["BP"].upgrades[12].effect());
+	if (hasUpgrade("BP", 13)) gain = gain.times(layers["BP"].upgrades[13].effect());
+	if (hasUpgrade("BP", 14)) gain = gain.times(layers["BP"].upgrades[14].effect());
+	if (hasUpgrade("BP", 15)) gain = gain.times(layers["BP"].upgrades[15].effect());
+	if (hasUpgrade("BP", 21)) gain = gain.times(layers["BP"].upgrades[21].effect());
+	if (hasUpgrade("BP", 22)) gain = gain.times(layers["BP"].upgrades[22].effect());
+	if (hasUpgrade("BP", 23)) gain = gain.times(layers["BP"].upgrades[23].effect());
+	if (hasUpgrade("BP", 24)) gain = gain.times(layers["BP"].upgrades[24].effect());
+	if (hasUpgrade("BP", 25)) gain = gain.times(layers["BP"].upgrades[25].effect());
+	if (hasUpgrade("BP", 31)) gain = gain.times(layers["BP"].upgrades[31].effect());
+	if (hasUpgrade("BP", 32)) gain = gain.times(layers["BP"].upgrades[32].effect());
+	if (hasUpgrade("BP", 33)) gain = gain.times(layers["BP"].upgrades[33].effect());
+	if (hasUpgrade("BP", 34)) gain = gain.times(layers["BP"].upgrades[34].effect());
+	if (hasUpgrade("BP", 35)) gain = gain.times(layers["BP"].upgrades[35].effect());
+
+
+
+	return gain 
+}
+
+	function getPointMult(){
+		let gain = new Decimal(1)
+
+
 	return gain
 }
 
@@ -71,6 +76,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
+	function() {if (inChallenge("BP", 11)) return "The game is currently <h1>0%</h1> harder."},
 ]
 
 // Determines when the game "ends"
