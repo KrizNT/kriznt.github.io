@@ -7,16 +7,17 @@ addLayer("BP", {
 		points: new Decimal(0),
     }},
     softcap: new Decimal(1e20), 
-    softcapPower: new Decimal(0.7), 
+    softcapPower: new Decimal(0.5), 
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-        if (hasUpgrade(this.layer, 11)) mult = mult.times(2) // These upgrades don't exist
-        if (hasUpgrade(this.layer, 21)) mult = mult.times(upgradeEffect(this.layer, 21))
-        if (hasUpgrade(this.layer, 31)) mult = mult.times(upgradeEffect(this.layer, 31))
+        if (hasUpgrade("BP", 13)) mult = mult.times(2);
+        if (hasUpgrade("BP", 32)) mult = mult.times(((Array.isArray(tmp.BP.mastered))?tmp.BP.mastered.includes(this.layer):false)?1e50:1.8);
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1)
+        let exp = new Decimal(1)
+        if (hasUpgrade("BP", 14)) exp = exp.times(1.01);
+        return exp;
     },
     infoboxes:{
         coolInfo: {
@@ -28,7 +29,7 @@ addLayer("BP", {
     },
 
     upgrades: {
-        rows: 10,
+        rows: 5,
         cols: 10,
         11: {
             title: "NT 1.x",
@@ -46,200 +47,169 @@ addLayer("BP", {
         },
     },
 
-    12: {
-        title: "NT 0.2x Booster",
-        description: "AP/s Booster",
-        cost: new Decimal(10),
-        unlocked() { return (hasUpgrade(this.layer, 11))},
-        effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-            let ret = player[this.layer].points.add(0.2).pow(player[this.layer].upgrades.includes(11)?0.2:(player[this.layer].upgrades.includes(11)?0.2:0.2)) 
-            if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-            return ret;
+12: {
+    title: "NT-Boost V1",
+    description: "AP boost their own generation.",
+    cost: new Decimal(1),
+    unlocked() { return (hasUpgrade(this.layer, 11))},
+    effect() { 
+        let eff = player.points.plus(1).log10().pow(5.75).plus(1);
+        return eff;
+        
+    },
+    effectDisplay() { return format(tmp.BP.upgrades[12].effect)+"x" },
+
+
+
+},
+
+13: {
+    title: "Reversed",
+    description: "BP gain is boosted by your AP.",
+    cost: new Decimal(100),
+    effect() {
+        let eff = player.points.plus(1).log10().cbrt().plus(1);
+        return eff;
+    },
+    unlocked() { return (hasUpgrade(this.layer, 12))},
+    effectDisplay() { return format(tmp.BP.upgrades[13].effect)+"x" },
+},
+
+
+
+14: {
+    title: "Oh boy! Here we go again!",
+    description: "BP expo is raised to the power from 0.71 to 1.01.",
+    cost: new Decimal(300),
+    unlocked() { return (hasUpgrade(this.layer, 13))},
+},
+
+15: {
+    title: "NT-Boost V1 but x is / 10K weaker",
+    description: "AP boost their own generation... again ._.",
+    cost: new Decimal(1e5),
+    unlocked() { return (hasUpgrade(this.layer, 14))},
+    effect() { 
+        let eff = player.points.plus(1).log10().pow(2.2).plus(1);
+        return eff;
+        
+    },
+    effectDisplay() { return format(tmp.BP.upgrades[15].effect)+"x" },
+},
+
+21: {
+    title: "NT-Boost V1 but its more weaker D:",
+    description: "AP boost their own generation bc i said like that!",
+    cost: new Decimal(1e7),
+    unlocked() { return (hasUpgrade(this.layer, 15))},
+    effect() { 
+        let eff = player.points.plus(1).log10().pow(1.1).plus(1);
+        return eff;
+        
+    },
+    effectDisplay() { return format(tmp.BP.upgrades[21].effect)+"x" },
+
+    },
+
+    22: {
+        title: "NT-Boost V1 but its like 4th one... Also its buffed up...",
+        description: "AP generation is boosted for like 4th time!?",
+        cost: new Decimal(4e7),
+        unlocked() { return (hasUpgrade(this.layer, 21))},
+        effect() { 
+            let eff = player.points.plus(1).log10().pow(3.5).plus(1);
+            return eff;
+            
         },
-        effectDisplay() { return format(this.effect())+"x" },
-    },
-
-    13: {
-        title: "NT 0.2x Booster V2",
-        description: "AP/s Booster V2",
-        cost: new Decimal(10),
-        unlocked() { return (hasUpgrade(this.layer, 12))},
-        effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-            let ret = player[this.layer].points.add(0.2).pow(player[this.layer].upgrades.includes(11)?0.2:(player[this.layer].upgrades.includes(11)?0.2:0.2)) 
-            if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-            return ret;
-        },
-        effectDisplay() { return format(this.effect())+"x" },
-    },
-
-    14: {
-        title: "NT 0.2x Booster V3",
-        description: "AP/s Booster V3",
-        cost: new Decimal(100),
-        unlocked() { return (hasUpgrade(this.layer, 13))},
-        effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-            let ret = player[this.layer].points.add(0.2).pow(player[this.layer].upgrades.includes(11)?0.2:(player[this.layer].upgrades.includes(11)?0.2:0.2)) 
-            if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-            return ret;
-        },
-        effectDisplay() { return format(this.effect())+"x" },
-    },
-
-    15: {
-        title: "NT 0.2x Booster V4",
-        description: "AP/s Booster V4",
-        cost: new Decimal(1e3),
-        unlocked() { return (hasUpgrade(this.layer, 14))},
-        effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-            let ret = player[this.layer].points.add(0.2).pow(player[this.layer].upgrades.includes(11)?0.2:(player[this.layer].upgrades.includes(11)?0.2:0.2)) 
-            if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-            return ret;
-        },
-        effectDisplay() { return format(this.effect())+"x" },
-    },
-
-    21: {
-        title: "NT 2.x",
-        description: "Upgrade your Database to V5",
-        cost: 2e3,
-        unlocked() { return (hasUpgrade(this.layer, 15))},
-        effectDisplay() {
-            return "AP +" + upgradeEffect(this.layer, this.id);
-        },
-        onPurchase() {
-            player.generating = false;
-        },
-        effect() {
-            return new Decimal(50);
-
-    },
-},
-
-22: {
-    title: "NT 0.24x Booster",
-    description: "AP/s Booster V6",
-    cost: new Decimal(4e3),
-    unlocked() { return (hasUpgrade(this.layer, 21))},
-    effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-        let ret = player[this.layer].points.add(0.24).pow(player[this.layer].upgrades.includes(11)?0.24:(player[this.layer].upgrades.includes(11)?0.24:0.24)) 
-        if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-        return ret;
-    },
-    effectDisplay() { return format(this.effect())+"x" },
-},
-
-23: {
-    title: "NT 0.24x Booster V2",
-    description: "AP/s Booster V7",
-    cost: new Decimal(8e3),
-    unlocked() { return (hasUpgrade(this.layer, 22))},
-    effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-        let ret = player[this.layer].points.add(0.24).pow(player[this.layer].upgrades.includes(11)?0.24:(player[this.layer].upgrades.includes(11)?0.24:0.24)) 
-        if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-        return ret;
-    },
-    effectDisplay() { return format(this.effect())+"x" },
-},
-
-24: {
-    title: "NT 0.24x Booster V3",
-    description: "AP/s Booster V8",
-    cost: new Decimal(2e4),
-    unlocked() { return (hasUpgrade(this.layer, 23))},
-    effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-        let ret = player[this.layer].points.add(0.24).pow(player[this.layer].upgrades.includes(11)?0.24:(player[this.layer].upgrades.includes(11)?0.24:0.24)) 
-        if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-        return ret;
-    },
-    effectDisplay() { return format(this.effect())+"x" },
-},
-
-25: {
-    title: "NT 0.24x Booster V4",
-    description: "AP/s Booster V9",
-    cost: new Decimal(4e4),
-    unlocked() { return (hasUpgrade(this.layer, 24))},
-    effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-        let ret = player[this.layer].points.add(0.24).pow(player[this.layer].upgrades.includes(11)?0.24:(player[this.layer].upgrades.includes(11)?0.24:0.24)) 
-        if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-        return ret;
-    },
-    effectDisplay() { return format(this.effect())+"x" },
-},
-
-31: {
-    title: "NT 0.28x Booster V1",
-    description: "AP/s Booster V10",
-    cost: new Decimal(8e4),
-    unlocked() { return (hasUpgrade(this.layer, 25))},
-    effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-        let ret = player[this.layer].points.add(0.28).pow(player[this.layer].upgrades.includes(11)?0.28:(player[this.layer].upgrades.includes(11)?0.28:0.28)) 
-        if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-        return ret;
-    },
-    effectDisplay() { return format(this.effect())+"x" },
-},
-
-32: {
-    title: "NT 0.28x Booster V2",
-    description: "AP/s Booster V11",
-    cost: new Decimal(2e5),
-    unlocked() { return (hasUpgrade(this.layer, 31))},
-    effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-        let ret = player[this.layer].points.add(0.28).pow(player[this.layer].upgrades.includes(11)?0.28:(player[this.layer].upgrades.includes(11)?0.28:0.28)) 
-        if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-        return ret;
-    },
-    effectDisplay() { return format(this.effect())+"x" },
-},
-
-33: {
-    title: "NT 0.28x Booster V3",
-    description: "AP/s Booster V12",
-    cost: new Decimal(2e6),
-    unlocked() { return (hasUpgrade(this.layer, 32))},
-    effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-        let ret = player[this.layer].points.add(0.28).pow(player[this.layer].upgrades.includes(11)?0.28:(player[this.layer].upgrades.includes(11)?0.28:0.28)) 
-        if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-        return ret;
-    },
-    effectDisplay() { return format(this.effect())+"x" },
-},
-
-34: {
-    title: "NT 0.28x Booster V4",
-    description: "AP/s Booster V13",
-    cost: new Decimal(2e7),
-    unlocked() { return (hasUpgrade(this.layer, 33))},
-    effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-        let ret = player[this.layer].points.add(0.28).pow(player[this.layer].upgrades.includes(11)?0.28:(player[this.layer].upgrades.includes(11)?0.28:0.28)) 
-        if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-        return ret;
-    },
-    effectDisplay() { return format(this.effect())+"x" },
-},
-
-35: {
-    title: "NT 0.28x Booster V5",
-    description: "AP/s Booster V14",
-    cost: new Decimal(2e8),
-    unlocked() { return (hasUpgrade(this.layer, 34))},
-    effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-        let ret = player[this.layer].points.add(0.28).pow(player[this.layer].upgrades.includes(11)?0.28:(player[this.layer].upgrades.includes(11)?0.28:0.28)) 
-        if (ret.gte("4")) ret = ret.sqrt().times("0.5")
-        return ret;
-    },
-    effectDisplay() { return format(this.effect())+"x" },
-},
-    },
+        effectDisplay() { return format(tmp.BP.upgrades[22].effect)+"x" },
     
+        },
 
+        23: {
+            title: "NT-Boost V1 but its like NT-Boost V1...",
+            description: "AP generation is boosted for last time... I hope",
+            cost: new Decimal(4.57e13),
+            unlocked() { return (hasUpgrade(this.layer, 22))},
+            effect() { 
+                let eff = player.points.plus(1).log10().pow(5.75).plus(1);
+                return eff;
+                
+            },
+            effectDisplay() { return format(tmp.BP.upgrades[23].effect)+"x" },
+        
+            },
+
+            24: {
+                title: "NT-Boost V1 but its 2x stronger?",
+                description: "AP generation is boosted for LAST TIME!!!",
+                cost: new Decimal(4.57e19),
+                unlocked() { return (hasUpgrade(this.layer, 23))},
+                effect() { 
+                    let eff = player.points.plus(1).log10().pow(9.75).plus(1);
+                    return eff;
+                    
+                },
+                effectDisplay() { return format(tmp.BP.upgrades[24].effect)+"x" },
+            
+                },
+
+                
+            25: {
+                title: "NT-Boost V1 but its 2x stronger... Again?",
+                description: "AP generation is boosted for LAST TIME!!!",
+                cost: new Decimal(1e28),
+                unlocked() { return (hasUpgrade(this.layer, 24))},
+                effect() { 
+                    let eff = player.points.plus(1).log10().pow(15.75).plus(1);
+                    return eff;
+                    
+                },
+                effectDisplay() { return format(tmp.BP.upgrades[25].effect)+"x" },
+            
+                },
+
+                31: {
+                    title: "NT-Boost V1 but its 1.24x stronger... Again... AGAIN?????",
+                    description: "AP generation is boosted for LAST TIME!!! I promise...",
+                    cost: new Decimal(3e41),
+                    unlocked() { return (hasUpgrade(this.layer, 25))},
+                    effect() { 
+                        let eff = player.points.plus(1).log10().pow(10.75).plus(1);
+                        return eff;
+                        
+                    },
+                    effectDisplay() { return format(tmp.BP.upgrades[31].effect)+"x" },
+                
+                    },
+
+                    32: {
+                        title: "More BP",
+                        description() { return "BP gain is increased by "+(((Array.isArray(tmp.BP.mastered))?tmp.BP.mastered.includes(this.layer):false)?"1e52":"80")+"%." },
+                        cost: new Decimal(1e5),
+                        unlocked() { return (hasUpgrade(this.layer, 13))},
+                    },
+},
+  
         milestones: {
             0: {
                 title: "Conversion",
                 requirementDescription: "Conversion",
                 effectDescription: "Get your 1st BP!",
                 done() { return player.BP.points.gte(1) }
+            },
+
+            1: {
+                title: "Richest Person Alive!",
+                requirementDescription: "Richest Person Alive!",
+                effectDescription: "Get to e20 BP! Also did i mention about softcap?",
+                done() { return player.BP.points.gte(1e20) }
+            },
+
+            2: {
+                title: "Someone is trespassing!",
+                requirementDescription: "Someone is trespassing in my BP property!",
+                effectDescription: "Get to e50 BP! How you got past softcap power???",
+                done() { return player.BP.points.gte(1e50) }
             }
         },
     
@@ -250,7 +220,7 @@ addLayer("BP", {
     baseResource: "AP", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.7, // Prestige currency exponent
+    exponent: 0.71, // Prestige currency exponent
     gainMult() {
         return new Decimal(1) // Calculate the multiplier for main currency from bonuses
     },

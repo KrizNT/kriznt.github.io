@@ -45,7 +45,6 @@ function getPointGen() {
 	if (hasUpgrade("BP", 11)) gain = gain.times(layers["BP"].upgrades[11].effect());
 	if (hasUpgrade("BP", 12)) gain = gain.times(layers["BP"].upgrades[12].effect());
 	if (hasUpgrade("BP", 13)) gain = gain.times(layers["BP"].upgrades[13].effect());
-	if (hasUpgrade("BP", 14)) gain = gain.times(layers["BP"].upgrades[14].effect());
 	if (hasUpgrade("BP", 15)) gain = gain.times(layers["BP"].upgrades[15].effect());
 	if (hasUpgrade("BP", 21)) gain = gain.times(layers["BP"].upgrades[21].effect());
 	if (hasUpgrade("BP", 22)) gain = gain.times(layers["BP"].upgrades[22].effect());
@@ -53,13 +52,6 @@ function getPointGen() {
 	if (hasUpgrade("BP", 24)) gain = gain.times(layers["BP"].upgrades[24].effect());
 	if (hasUpgrade("BP", 25)) gain = gain.times(layers["BP"].upgrades[25].effect());
 	if (hasUpgrade("BP", 31)) gain = gain.times(layers["BP"].upgrades[31].effect());
-	if (hasUpgrade("BP", 32)) gain = gain.times(layers["BP"].upgrades[32].effect());
-	if (hasUpgrade("BP", 33)) gain = gain.times(layers["BP"].upgrades[33].effect());
-	if (hasUpgrade("BP", 34)) gain = gain.times(layers["BP"].upgrades[34].effect());
-	if (hasUpgrade("BP", 35)) gain = gain.times(layers["BP"].upgrades[35].effect());
-
-
-
 	return gain 
 }
 
