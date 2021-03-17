@@ -6,20 +6,21 @@ let modInfo = {
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (1), // Used for hard resets and new players
-	
+	endgame: new Decimal("e200"),
+    specialEndgameText: "v0.4 Endgame: e200 AP",
 	offlineLimit: 1,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3a",
-	name: "Remake - Part 1",
+	num: "0.4",
+	name: "SP Layer",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.3</h3><br>
-		- Added BP Based boosters upgrades.<br>
-		- Added 10 New Upgrades.`
+	<h3>v0.4</h3><br>
+		- Added AP Based Boosters as well as 12 New Achivements with noice boosts.<br>
+		- Added SP Layer and 4 SP Upgrades and 1 SP Milestone.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -52,6 +53,13 @@ function getPointGen() {
 	if (hasUpgrade("BP", 24)) gain = gain.times(layers["BP"].upgrades[24].effect());
 	if (hasUpgrade("BP", 25)) gain = gain.times(layers["BP"].upgrades[25].effect());
 	if (hasUpgrade("BP", 31)) gain = gain.times(layers["BP"].upgrades[31].effect());
+	if (hasUpgrade("BP", 32)) gain = gain.times(layers["BP"].upgrades[32].effect());
+	if (hasUpgrade("BP", 33)) gain = gain.times(layers["BP"].upgrades[33].effect());
+	if (hasUpgrade("BP", 34)) gain = gain.times(layers["BP"].upgrades[34].effect());
+	if (hasUpgrade("BP", 35)) gain = gain.times(layers["BP"].upgrades[35].effect());
+	if (hasUpgrade("SP", 12)) gain = gain.times(layers["SP"].upgrades[12].effect());
+	if (hasUpgrade("SP", 13)) gain = gain.times(layers["SP"].upgrades[13].effect());
+	if (hasUpgrade("SP", 14)) gain = gain.times(layers["SP"].upgrades[14].effect());
 	return gain 
 }
 
@@ -73,7 +81,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(modInfo.endgame)
 }
 
 
