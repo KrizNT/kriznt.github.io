@@ -1,13 +1,13 @@
 let modInfo = {
-	name: "Upgrade Wall",
+	name: "Upgrade Wall V0.5",
 	id: "krizthedev",
 	author: "KrizNT // Kriz#0250",
 	pointsName: "AP",
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (1), // Used for hard resets and new players
-	endgame: new Decimal("e200"),
-    specialEndgameText: "v0.4 Endgame: e200 AP",
+	endgame: new Decimal("e2000000"),
+    specialEndgameText: "v0.5 Endgame: e2e6 AP",
 	offlineLimit: 1,  // In hours
 }
 
@@ -43,8 +43,8 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	if (player.SP.unlocked) gain = gain.times(layers.SP.effect()[0])
 	if (hasUpgrade("BP", 11)) gain = gain.times(layers["BP"].upgrades[11].effect());
-	if (hasUpgrade("BP", 12)) gain = gain.times(layers["BP"].upgrades[12].effect());
 	if (hasUpgrade("BP", 13)) gain = gain.times(layers["BP"].upgrades[13].effect());
 	if (hasUpgrade("BP", 15)) gain = gain.times(layers["BP"].upgrades[15].effect());
 	if (hasUpgrade("BP", 21)) gain = gain.times(layers["BP"].upgrades[21].effect());
@@ -60,6 +60,8 @@ function getPointGen() {
 	if (hasUpgrade("SP", 12)) gain = gain.times(layers["SP"].upgrades[12].effect());
 	if (hasUpgrade("SP", 13)) gain = gain.times(layers["SP"].upgrades[13].effect());
 	if (hasUpgrade("SP", 14)) gain = gain.times(layers["SP"].upgrades[14].effect());
+	if (hasUpgrade("SP", 15)) gain = gain.times(layers["SP"].upgrades[15].effect());
+	if (hasUpgrade("SP", 22)) gain = gain.times(layers["SP"].upgrades[22].effect());
 	return gain 
 }
 

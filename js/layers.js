@@ -1,13 +1,14 @@
 addLayer("BP", {
     name: "BP", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "BP", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    position: 0,
+    branches: ["SP"], // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
     }},
     softcap: new Decimal(1e20), 
-    softcapPower: new Decimal(0.2), 
+    softcapPower: new Decimal(0.02), 
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasAchievement("a", 31)) mult = mult.times(45);
@@ -15,6 +16,7 @@ addLayer("BP", {
         if (hasAchievement("a", 33)) mult = mult.times(180);
 		if (hasAchievement("a", 34)) mult = mult.times(360);
         if (hasUpgrade("BP", 14)) mult = mult.times(4);
+        if (hasUpgrade('SP', 21)) mult = mult.times(upgradeEffect('SP', 21))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -44,7 +46,7 @@ addLayer("BP", {
                 return "AP +" + upgradeEffect(this.layer, this.id);
             },
             onPurchase() {
-                player.generating = false;
+                player.generating = false
             },
             effect() {
                 return new Decimal(8);
@@ -317,6 +319,7 @@ addLayer("BP", {
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
+    branches: ["SP"],
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -331,9 +334,22 @@ addLayer("SP", {
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
-    }}, 
+    }},  
+    canBuyMax() { return hasMilestone('IP', 0) },
     resetsNothing() { return hasMilestone("SP", 0)&&player.BP.current!="SP" },
 
+    effect() {
+        let count = player.SP.points
+        let mult = new Decimal(1)
+
+        return [Decimal.pow(1.00001, count)]
+    },
+    effectDescription() {
+        eff = this.effect();
+        return `which are boosting AP by x${format(eff[0])}<br>`
+    },
+    
+    autoPrestige() { return (hasMilestone("SP", 1) && player.SP.auto) },
 
     upgrades: {
         rows: 5,
@@ -402,6 +418,46 @@ addLayer("SP", {
             },
             },
 
+            15: {
+                title: "Fast",
+                description: "AP generation is faster based on unspent SP.",
+                cost: new Decimal(50),
+                unlocked() { return hasUpgrade("SP", 14)
+            },
+                effect() {
+                    let ret = player[this.layer].points.add(1).pow(12/5)
+                    return ret;
+                },
+                effectDisplay() { return format(this.effect())+"x" },
+            },
+
+            21: {
+                title: "Hold on i forgot to nerf this",
+                description: "Gain more AP based on SP.",
+                cost: new Decimal(50),
+                unlocked() { return hasUpgrade("SP", 14)
+            },
+                effect() {
+                    let ret = player.points.add(1).pow(hasUpgrade('BP', 31)?1/5:1/7.5)
+                    if (hasUpgrade('SP', 22)) ret = ret.pow(1.25)
+                    return ret;
+                },
+                effectDisplay() { return format(this.effect())+"x" },
+            },
+
+            22: {
+                title: "For 2nd IP!",
+                description: "Gain more AP based on SP.",
+                cost: new Decimal(150),
+                unlocked() { return hasUpgrade("SP", 21)
+            },
+                effect() {
+                    let ret = player.points.add(1).pow(hasUpgrade('BP', 31)?3/5:3/7.5)
+                    if (hasUpgrade('SP', 22)) ret = ret.pow(1.25)
+                    return ret;
+                },
+                effectDisplay() { return format(this.effect())+"x" },
+            },
 },
 
 
@@ -414,20 +470,61 @@ addLayer("SP", {
     milestones: {
         0: {
             title: "Keep them ALL!",
-            requirementDescription: "KEEP THEM ALL!!!",
-            effectDescription: "Own 3 SP || Reward: SP DOESN'T reset BP milestones",
+            requirementDescription: "3 SP",
+            effectDescription: "SP layer is now from VOLT -> NON-VOLT",
             done() { return player.SP.points.gte(3) }
         },
+    
 
 },
 
         color: "#f22f21",
     requires: new Decimal(1000), // Can be a function that takes requirement increases into account
     resource: "SP", // Name of prestige currency
-    baseResource: "BP", // Name of resource prestige is based on
-    baseAmount() {return player.BP.points}, // Get the current amount of baseResource
+    baseResource: "AP", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 1.3, // Prestige currency exponent
+    exponent: 4.002, // Prestige currency exponent
+    gainMult() {
+        return new Decimal(1)  // Calculate the multiplier for main currency from bonuses
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 1, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "b", description: "b: Reset for SP", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return player.BP.unlocked},
+}),
+
+addLayer("IP", {
+    name: "IP", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "IP", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    branches: ["SP"],
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    resetsNothing() { return hasMilestone("IP", 0)&&player.SP.current!="IP" },
+    resetsNothing() { return hasMilestone("IP", 0)&&player.BP.current!="IP" },
+
+    milestones: {
+        0: {
+            title: "Bulk",
+            requirementDescription: "1 IP",
+            effectDescription: "You can bulk buy SP and IP is non-volatible layer",
+            done() { return player.IP.points.gte(1) }
+        },
+    },
+    color: "#ED9526",
+    requires: new Decimal(400), // Can be a function that takes requirement increases into account
+    resource: "IP", // Name of prestige currency
+    baseResource: "SP", // Name of resource prestige is based on
+    baseAmount() {return player.SP.points},
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 1.1, // Prestige currency exponent
     gainMult() {
         return new Decimal(1) // Calculate the multiplier for main currency from bonuses
     },
@@ -436,10 +533,10 @@ addLayer("SP", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "c", description: "c: Reset for Inf-P", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    layerShown(){return true}
-})
+    layerShown(){return player.SP.unlocked}
+}),
 
 addLayer("a", {
     startData() { return {
@@ -518,9 +615,33 @@ addLayer("a", {
 
         34: {
             name: "Maxed Out!",
-            done() { return player.BP.upgrades.length>=14 },
-            tooltip: "Purchase 14 BP Upgrades || Reward: Gain 360x more BP",
+            done() { return player.BP.upgrades.length>=15 },
+            tooltip: "Purchase 15 BP Upgrades || Reward: Gain 360x more BP",
         },
+        41: {
+            name: "SP I",
+            done() { return player.SP.points.gte(1) },
+            tooltip: "Get to 1 SP",
+        },
+        42: {
+            name: "SP II",
+            done() { return player.SP.points.gte(10) },
+            tooltip: "Get to 10 SP",
+        },
+        43: {
+            name: "SP III",
+            done() { return player.SP.points.gte(45) },
+            tooltip: "Get to 45 SP",
+        },
+        44: {
+            name: "SP IV",
+            done() { return player.SP.points.gte(400) },
+            tooltip: "Get to 400 SP || Reward: New Layer!",
+        },
+
+
+
+
 
     },
     tabFormat: [
